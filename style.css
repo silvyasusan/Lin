@@ -1,14 +1,15 @@
 body {
     margin: 0;
+    background: #2C2C2C; /* Dark charcoal for cozy vibe */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #2B2A33; /* Dark charcoal for cozy vibe */
     font-family: 'Arial', sans-serif;
 }
 
 canvas {
-    border: 2px solid #F4A7B9; /* Soft pink border */
-    background-color: #3A3A44; /* Slightly lighter dark for canvas */
+    border: 2px solid #FFB6C1; /* Soft pink border */
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 192, 203, 0.5); /* Glow effect */
 }
