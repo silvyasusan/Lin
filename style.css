@@ -1,27 +1,28 @@
 body {
     margin: 0;
-    background: linear-gradient(135deg, #2C2C2C 0%, #3E3E3E 100%); /* Dark gradient */
+    background: linear-gradient(135deg, #2C2C2C 0%, #3E3E3E 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Indie Flower', 'Arial', sans-serif; /* Fallback font */
     overflow: hidden;
 }
 
 canvas {
-    border: 3px solid #FFB6C1; /* Soft pink */
+    border: 3px solid #FFB6C1;
     border-radius: 15px;
-    box-shadow: 0 0 30px rgba(255, 182, 193, 0.6); /* Glow */
-    background: radial-gradient(circle, rgba(255, 245, 238, 0.2), transparent); /* Vignette */
+    box-shadow: 0 0 30px rgba(255, 182, 193, 0.6);
+    background: radial-gradient(circle, rgba(255, 245, 238, 0.2), transparent);
 }
 
 #loading {
     position: absolute;
-    color: #FFFACD; /* Lemon chiffon */
+    color: #FFFACD;
     font-size: 24px;
     text-align: center;
     animation: pulse 1.5s infinite;
+    transition: opacity 0.3s;
 }
 
 @keyframes pulse {
