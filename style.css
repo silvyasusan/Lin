@@ -12,7 +12,7 @@ body {
 canvas {
     width: 100vw;
     height: 100vh;
-    display: block;
+    display: none;
 }
 
 #loading {
@@ -20,5 +20,94 @@ canvas {
     color: #FFFACD;
     font-size: 24px;
     text-align: center;
-    transition: opacity 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+#loading-message {
+    font-size: 28px;
+    color: #FFB6C1;
+    max-width: 80%;
+}
+
+#start-button {
+    padding: 10px 20px;
+    font-size: 20px;
+    background-color: #FFDAB9;
+    border: none;
+    border-radius: 10px;
+    color: #2C2C2C;
+    cursor: pointer;
+}
+
+#message-box {
+    position: absolute;
+    background-color: #FFFACD;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 80%;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+#message-content {
+    font-size: 18px;
+    color: #FF9999;
+}
+
+#close-message {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #FFB6C1;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#celebration-popup {
+    position: absolute;
+    background-color: #FFFACD;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+#popup-content {
+    font-size: 24px;
+    color: #FF9999;
+    margin-bottom: 20px;
+}
+
+#continue-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #FFDAB9;
+    border: none;
+    border-radius: 10px;
+    color: #2C2C2C;
+    cursor: pointer;
+}
+
+#letter-box {
+    position: absolute;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="5" fill="#FFB6C1"/><rect x="8" y="12" width="4" height="6" fill="#FFDAB9"/></svg>') repeat;
+    background-color: #FFF5EE;
+    border-radius: 15px;
+    padding: 20px;
+    max-width: 60%;
+    max-height: 70vh;
+    overflow-y: auto;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    font-family: 'Cedarville Cursive', cursive, 'Comic Sans MS', sans-serif;
+}
+
+#letter-content {
+    font-size: 20px;
+    color: #FF9999;
+    text-align: center;
 }
