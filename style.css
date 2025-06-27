@@ -5,15 +5,14 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    font-family: 'Indie Flower', 'Arial', sans-serif; /* Fallback font */
+    font-family: 'Indie Flower', 'Arial', sans-serif;
     overflow: hidden;
 }
 
 canvas {
-    border: 3px solid #FFB6C1;
-    border-radius: 15px;
-    box-shadow: 0 0 30px rgba(255, 182, 193, 0.6);
-    background: radial-gradient(circle, rgba(255, 245, 238, 0.2), transparent);
+    width: 100vw; /* Full screen width */
+    height: 100vh; /* Full screen height */
+    display: block;
 }
 
 #loading {
