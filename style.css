@@ -5,13 +5,13 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    font-family: 'Indie Flower', 'Arial', sans-serif;
+    font-family: 'Comic Sans MS', 'Arial', sans-serif;
     overflow: hidden;
 }
 
 canvas {
-    width: 100vw; /* Full screen width */
-    height: 100vh; /* Full screen height */
+    width: 100vw;
+    height: 100vh;
     display: block;
 }
 
@@ -22,6 +22,11 @@ canvas {
     text-align: center;
     animation: pulse 1.5s infinite;
     transition: opacity 0.3s;
+}
+
+#progress {
+    font-size: 18px;
+    color: #FFB6C1;
 }
 
 @keyframes pulse {
