@@ -7,8 +7,22 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="loading">Loading BunBun's Cozy Adventure...</div>
+    <div id="loading">
+        <div id="loading-message">[Your custom loading message here]</div>
+        <button id="start-button">Start Game</button>
+    </div>
     <canvas id="gameCanvas"></canvas>
+    <div id="message-box" style="display: none;">
+        <div id="message-content">[Message placeholder]</div>
+        <button id="close-message">X</button>
+    </div>
+    <div id="celebration-popup" style="display: none;">
+        <div id="popup-content">All Gifts Found!</div>
+        <button id="continue-button">Continue</button>
+    </div>
+    <div id="letter-box" style="display: none;">
+        <div id="letter-content">[Your custom letter message here]</div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
