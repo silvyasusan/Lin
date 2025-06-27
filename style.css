@@ -1,15 +1,31 @@
 body {
     margin: 0;
-    background: #2C2C2C; /* Dark charcoal for cozy vibe */
+    background: linear-gradient(135deg, #2C2C2C 0%, #3E3E3E 100%); /* Dark gradient */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Indie Flower', cursive;
+    overflow: hidden;
 }
 
 canvas {
-    border: 2px solid #FFB6C1; /* Soft pink border */
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(255, 192, 203, 0.5); /* Glow effect */
+    border: 3px solid #FFB6C1; /* Soft pink */
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(255, 182, 193, 0.6); /* Glow */
+    background: radial-gradient(circle, rgba(255, 245, 238, 0.2), transparent); /* Vignette */
+}
+
+#loading {
+    position: absolute;
+    color: #FFFACD; /* Lemon chiffon */
+    font-size: 24px;
+    text-align: center;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
 }
