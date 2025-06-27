@@ -8,39 +8,95 @@ const closeMessage = document.getElementById('close-message');
 const celebrationPopup = document.getElementById('celebration-popup');
 const continueButton = document.getElementById('continue-button');
 const letterBox = document.getElementById('letter-box');
-const letterContent = document.getElementById('letter-content');
 
 // Canvas setup
 canvas.width = Math.min(window.innerWidth, 800);
 canvas.height = Math.min(window.innerHeight, 600);
 const visibleTilesY = 7;
-const tileSize = 40; // Smaller for larger maze
+const tileSize = 40;
 
-// Maze (160x60, 4x larger than 40x15)
-const maze = [
-    // Static maze with 10 gift boxes at dead ends (abridged for brevity)
-    // [160x60 array with 1s (walls), 0s (paths), 2 (bunny at 1,1), 3s (gifts at dead ends)]
-    // Example structure (full maze generated offline for performance):
-    [1,1,1,1,1,1,1,1,1,1, /* ... 150 more */],
-    [1,2,0,0,0,0,0,1,0,0, /* ... */],
-    [1,1,1,1,1,1,0,1,1,0, /* ... */],
-    // ... 57 more rows
-    [1,0,0,0,0,0,0,0,0,3, /* ... */]
-].map(row => Array(160).fill(1)); // Placeholder; full maze below
-
-// Gift box positions and messages
-const gifts = [
-    { x: 158, y: 58, message: '[Your first gift message here]' },
-    { x: 10, y: 5, message: '[Your second gift message here]' },
-    { x: 30, y: 15, message: '[Your third gift message here]' },
-    { x: 50, y: 25, message: '[Your fourth gift message here]' },
-    { x: 70, y: 35, message: '[Your fifth gift message here]' },
-    { x: 90, y: 45, message: '[Your sixth gift message here]' },
-    { x: 110, y: 55, message: '[Your seventh gift message here]' },
-    { x: 130, y: 20, message: '[Your eighth gift message here]' },
-    { x: 150, y: 30, message: '[Your ninth gift message here]' },
-    { x: 140, y: 40, message: '[Your tenth gift message here]' }
+// Simplified 160x60 maze with 10 gift boxes at dead ends
+const maze = Array(60).fill().map(() => Array(160).fill(1)); // Initialize with walls
+// Main path from (1,1) to gifts, with dead ends
+const path = [
+    // Main path to (158,58)
+    [1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1],
+    [10,2],[10,3],[10,4],[10,5],[11,5],[12,5],[13,5],[14,5],[15,5],
+    [16,5],[17,5],[18,5],[19,5],[20,5],[21,5],[22,5],[23,5],[24,5],
+    [25,5],[26,5],[27,5],[28,5],[29,5],[30,5],[31,5],[32,5],[33,5],
+    [34,5],[35,5],[36,5],[37,5],[38,5],[39,5],[40,5],[41,5],[42,5],
+    [43,5],[44,5],[45,5],[46,5],[47,5],[48,5],[49,5],[50,5],[51,5],
+    [52,5],[53,5],[54,5],[55,5],[56,5],[57,5],[58,5],[59,5],[60,5],
+    [61,5],[62,5],[63,5],[64,5],[65,5],[66,5],[67,5],[68,5],[69,5],
+    [70,5],[71,5],[72,5],[73,5],[74,5],[75,5],[76,5],[77,5],[78,5],
+    [79,5],[80,5],[81,5],[82,5],[83,5],[84,5],[85,5],[86,5],[87,5],
+    [88,5],[89,5],[90,5],[91,5],[92,5],[93,5],[94,5],[95,5],[96,5],
+    [97,5],[98,5],[99,5],[100,5],[101,5],[102,5],[103,5],[104,5],[105,5],
+    [106,5],[107,5],[108,5],[109,5],[110,5],[111,5],[112,5],[113,5],[114,5],
+    [115,5],[116,5],[117,5],[118,5],[119,5],[120,5],[121,5],[122,5],[123,5],
+    [124,5],[125,5],[126,5],[127,5],[128,5],[129,5],[130,5],[131,5],[132,5],
+    [133,5],[134,5],[135,5],[136,5],[137,5],[138,5],[139,5],[140,5],[141,5],
+    [142,5],[143,5],[144,5],[145,5],[146,5],[147,5],[148,5],[149,5],[150,5],
+    [151,5],[152,5],[153,5],[154,5],[155,5],[156,5],[157,5],[158,5],
+    [158,6],[158,7],[158,8],[158,9],[158,10],[158,11],[158,12],[158,13],
+    [158,14],[158,15],[158,16],[158,17],[158,18],[158,19],[158,20],
+    [158,21],[158,22],[158,23],[158,24],[158,25],[158,26],[158,27],
+    [158,28],[158,29],[158,30],[158,31],[158,32],[158,33],[158,34],
+    [158,35],[158,36],[158,37],[158,38],[158,39],[158,40],[158,41],
+    [158,42],[158,43],[158,44],[158,45],[158,46],[158,47],[158,48],
+    [158,49],[158,50],[158,51],[158,52],[158,53],[158,54],[158,55],
+    [158,56],[158,57],[158,58],
+    // Branch to (10,5)
+    [9,2],[9,3],[9,4],[9,5],[10,5],
+    // Branch to (30,15)
+    [29,6],[29,7],[29,8],[29,9],[29,10],[29,11],[29,12],[29,13],[29,14],[29,15],[30,15],
+    // Branch to (50,25)
+    [49,6],[49,7],[49,8],[49,9],[49,10],[49,11],[49,12],[49,13],[49,14],[49,15],
+    [49,16],[49,17],[49,18],[49,19],[49,20],[49,21],[49,22],[49,23],[49,24],[49,25],[50,25],
+    // Branch to (70,35)
+    [69,6],[69,7],[69,8],[69,9],[69,10],[69,11],[69,12],[69,13],[69,14],[69,15],
+    [69,16],[69,17],[69,18],[69,19],[69,20],[69,21],[69,22],[69,23],[69,24],[69,25],
+    [69,26],[69,27],[69,28],[69,29],[69,30],[69,31],[69,32],[69,33],[69,34],[69,35],[70,35],
+    // Branch to (90,45)
+    [89,6],[89,7],[89,8],[89,9],[89,10],[89,11],[89,12],[89,13],[89,14],[89,15],
+    [89,16],[89,17],[89,18],[89,19],[89,20],[89,21],[89,22],[89,23],[89,24],[89,25],
+    [89,26],[89,27],[89,28],[89,29],[89,30],[89,31],[89,32],[89,33],[89,34],[89,35],
+    [89,36],[89,37],[89,38],[89,39],[89,40],[89,41],[89,42],[89,43],[89,44],[89,45],[90,45],
+    // Branch to (110,55)
+    [109,6],[109,7],[109,8],[109,9],[109,10],[109,11],[109,12],[109,13],[109,14],[109,15],
+    [109,16],[109,17],[109,18],[109,19],[109,20],[109,21],[109,22],[109,23],[109,24],[109,25],
+    [109,26],[109,27],[109,28],[109,29],[109,30],[109,31],[109,32],[109,33],[109,34],[109,35],
+    [109,36],[109,37],[109,38],[109,39],[109,40],[109,41],[109,42],[109,43],[109,44],[109,45],
+    [109,46],[109,47],[109,48],[109,49],[109,50],[109,51],[109,52],[109,53],[109,54],[109,55],[110,55],
+    // Branch to (130,20)
+    [129,6],[129,7],[129,8],[129,9],[129,10],[129,11],[129,12],[129,13],[129,14],[129,15],
+    [129,16],[129,17],[129,18],[129,19],[129,20],[130,20],
+    // Branch to (150,30)
+    [149,6],[149,7],[149,8],[149,9],[149,10],[149,11],[149,12],[149,13],[149,14],[149,15],
+    [149,16],[149,17],[149,18],[149,19],[149,20],[149,21],[149,22],[149,23],[149,24],[149,25],
+    [149,26],[149,27],[149,28],[149,29],[149,30],[150,30],
+    // Branch to (140,40)
+    [139,6],[139,7],[139,8],[139,9],[139,10],[139,11],[139,12],[139,13],[139,14],[139,15],
+    [139,16],[139,17],[139,18],[139,19],[139,20],[139,21],[139,22],[139,23],[139,24],[139,25],
+    [139,26],[139,27],[139,28],[139,29],[139,30],[139,31],[139,32],[139,33],[139,34],[139,35],
+    [139,36],[139,37],[139,38],[139,39],[139,40],[140,40]
 ];
+// Set path tiles
+path.forEach(([x, y]) => maze[y][x] = 0);
+maze[1][1] = 2; // Bunny start
+const gifts = [
+    { x: 158, y: 58, message: 'You found the first gift! A basket of carrots for you!' },
+    { x: 10, y: 5, message: 'Yay, BunBun! Here’s a cozy blanket for chilly nights.' },
+    { x: 30, y: 15, message: 'A shiny balloon just for you! Keep hopping!' },
+    { x: 50, y: 25, message: 'Surprise! A bundle of flowers to brighten your day.' },
+    { x: 70, y: 35, message: 'You’re amazing! Enjoy this sparkly trinket.' },
+    { x: 90, y: 45, message: 'A sweet treat awaits you, BunBun!' },
+    { x: 110, y: 55, message: 'Hooray! A special ribbon for your fluffy tail.' },
+    { x: 130, y: 20, message: 'You found a cuddly plushie to keep you company!' },
+    { x: 150, y: 30, message: 'A golden carrot for the best bunny!' },
+    { x: 140, y: 40, message: 'Last gift! A heartfelt hug from me to you.' }
+];
+gifts.forEach(gift => maze[gift.y][gift.x] = 3);
 
 // Game state
 let bunny = { x: 1, y: 1, targetX: 1, targetY: 1, moving: false };
@@ -167,7 +223,8 @@ function updateBunny() {
             giftsFound++;
             gameState = 'message';
             messageContent.textContent = gift.message;
-            const width = Math.min(400, ctx.measureText(gift.message).width + 40);
+            ctx.font = '18px Comic Sans MS, Arial, sans-serif';
+            const width = Math.min(400, Math.max(...gift.message.split('\n').map(line => ctx.measureText(line).width)) + 40);
             const lines = gift.message.split('\n').length;
             messageBox.style.width = `${width}px`;
             messageBox.style.height = `${lines * 30 + 60}px`;
@@ -305,8 +362,9 @@ function draw() {
     requestAnimationFrame(draw);
 }
 
-// Initialize maze (placeholder, full maze generated offline)
+// Initialize maze
 console.log(`Loading started at ${new Date().toLocaleTimeString()}`);
+maze[1][1] = 2;
 gifts.forEach(gift => maze[gift.y][gift.x] = 3);
 
 // Verify maze solvability
@@ -356,6 +414,14 @@ setTimeout(() => {
         return;
     }
 
+    camera.x = bunny.x * tileSize - canvas.width / 2 + tileSize / 2;
+    camera.y = bunny.y * tileSize - canvas.height / 2 + tileSize / 2;
     updateBunny();
     draw();
 }, 100);
+
+// Error handling
+if (!ctx) {
+    console.error('Canvas context not supported');
+    loading.textContent = 'Error: Canvas not supported';
+        }
