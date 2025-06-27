@@ -1,0 +1,14 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #2B2A33; /* Dark charcoal for cozy vibe */
+    font-family: 'Arial', sans-serif;
+}
+
+canvas {
+    border: 2px solid #F4A7B9; /* Soft pink border */
+    background-color: #3A3A44; /* Slightly lighter dark for canvas */
+}
