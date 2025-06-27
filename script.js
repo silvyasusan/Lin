@@ -1,21 +1,20 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const loading = document.getElementById('loading');
+const progress = document.getElementById('progress');
 
-// Set canvas to full screen
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-// Calculate tile size to fit 7 tiles vertically
+// Cap canvas resolution for tablets
+canvas.width = Math.min(window.innerWidth, 800);
+canvas.height = Math.min(window.innerHeight, 600);
 const visibleTilesY = 7;
 const tileSize = Math.floor(canvas.height / visibleTilesY);
 
-// Harder maze (40x15, 1 = wall, 0 = path, 2 = bunny start, 3 = gift box)
+// Maze (40x15, harder)
 const maze = [
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [1,2,0,1,0,0,0,1,0,0,1,0,0,0,1,0,1,0,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,1],
     [1,1,1,1,1,1,0,1,1,0,1,1,1,0,1,0,1,1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,0,1],
-    [1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0, dump0,1,0,0,0,1],
+    [1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,1],
     [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1],
     [1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,1],
     [1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1],
@@ -176,7 +175,7 @@ function drawBanner() {
     ctx.globalAlpha = 1;
 
     ctx.fillStyle = colors.text;
-    ctx.font = `${tileSize / 3}px Indie Flower`;
+    ctx.font = `${tileSize / 3}px 'Comic Sans MS', Arial, sans-serif`;
     ctx.textAlign = 'center';
     ctx.fillText('HAPPY BIRTHDAY BUNBUN!', canvas.width / 2, banner.y + tileSize / 2);
 }
@@ -200,7 +199,7 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const startX = Math.max(0, Math.floor(camera.x / tileSize) - 1);
-    const endX = Math.min(maze[0ịch0].length, startX + Math.ceil(canvas.width / tileSize) + 2);
+    const endX = Math.min(maze[0].length, startX + Math.ceil(canvas.width / tileSize) + 2);
     const startY = Math.max(0, Math.floor(camera.y / tileSize) - 1);
     const endY = Math.min(maze.length, startY + visibleTilesY + 2);
 
@@ -223,32 +222,33 @@ function draw() {
 
     drawBunny(canvas.width / 2, canvas.height / 2);
 
-    ctx.fillStyle = colors.sparkle;
-    particles.forEach(p => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-    });
-
-    drawBanner();
+    if (gameWon) {
+        ctx.fillStyle = colors.sparkle;
+        particles.forEach(p => {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        drawBanner();
+    }
 
     needsRedraw = gameWon && (banner.y < canvas.height / 3 || particles.length > 0);
     requestAnimationFrame(draw);
 }
 
-// Handle window resize
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    tileSize = Math.floor(canvas.height / visibleTilesY);
-    camera.x = bunny.x * tileSize - canvas.width / 2 + tileSize / 2;
-    camera.y = bunny.y * tileSize - canvas.height / 2 + tileSize / 2;
-    needsRedraw = true;
-});
+// Simulate loading progress
+let loadProgress = 0;
+const progressInterval = setInterval(() => {
+    loadProgress = Math.min(loadProgress + 20, 100);
+    progress.textContent = `${loadProgress}%`;
+    if (loadProgress >= 100) clearInterval(progressInterval);
+}, 200);
 
 // Hide loading screen
 window.onload = () => {
     console.log('Resources loaded, hiding loading screen');
+    clearInterval(progressInterval);
+    progress.textContent = '100%';
     loading.style.opacity = '0';
     setTimeout(() => { loading.style.display = 'none'; }, 300);
     needsRedraw = true;
