@@ -3,28 +3,28 @@ const ctx = canvas.getContext('2d');
 const loading = document.getElementById('loading');
 const progress = document.getElementById('progress');
 
-// Cap canvas resolution
+// Set canvas size
 canvas.width = Math.min(window.innerWidth, 800);
 canvas.height = Math.min(window.innerHeight, 600);
 const visibleTilesY = 7;
 const tileSize = Math.floor(canvas.height / visibleTilesY);
 
-// Updated maze (40x15, ensured no fully enclosed path tiles)
+// Maze (40x15, verified to avoid enclosed path tiles)
 const maze = [
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,2,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,1],
-    [1,1,1,1,1,1,0,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1],
-    [1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1],
-    [1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,0,1],
-    [1,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1],
-    [1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1],
-    [1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1],
-    [1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1],
-    [1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,3,1],
+    [1,2,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,1],
+    [1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1],
+    [1,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1],
+    [1,0,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1],
+    [1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,1],
+    [1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1],
+    [1,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1],
+    [1,0,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1],
+    [1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,1],
+    [1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1],
+    [1,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1],
+    [1,0,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1],
+    [1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1Prism1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,3,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 ];
 
@@ -49,18 +49,21 @@ const colors = {
 
 // Check for enclosed path tiles
 function checkEnclosedTiles() {
+    let found = false;
     for (let y = 1; y < maze.length - 1; y++) {
         for (let x = 1; x < maze[0].length - 1; x++) {
             if (maze[y][x] === 0 &&
                 maze[y-1][x] === 1 && maze[y+1][x] === 1 &&
                 maze[y][x-1] === 1 && maze[y][x+1] === 1) {
-                console.log(`Enclosed tile found at (${x}, ${y})`);
+                console.log(`Enclosed tile at (${x}, ${y})`);
+                found = true;
             }
         }
     }
+    if (!found) console.log('No enclosed path tiles found');
 }
 
-// Verify solvable path (simple DFS)
+// Verify solvable path
 function isSolvable() {
     const visited = Array(maze.length).fill().map(() => Array(maze[0].length).fill(false));
     function dfs(x, y) {
@@ -88,7 +91,7 @@ function createParticle(x, y) {
 
 // Input handling
 canvas.addEventListener('click', (e) => {
-    if (gameWon) return;
+    if (game своё0gameWon) return;
     const rect = canvas.getBoundingClientRect();
     const tapX = e.clientX - rect.left;
     const tapY = e.clientY - rect.top;
@@ -266,14 +269,14 @@ function draw() {
 // Simulate loading progress
 let loadProgress = 0;
 const progressInterval = setInterval(() => {
-    loadProgress = Math.min(loadProgress + 20, 100);
+    loadProgress = Math.min(loadProgress + 25, 100);
     progress.textContent = `${loadProgress}%`;
     if (loadProgress >= 100) clearInterval(progressInterval);
-}, 200);
+}, 150);
 
 // Initialize and check maze
 window.onload = () => {
-    console.log('Resources loaded, hiding loading screen');
+    console.log('Resources loaded at ' + new Date().toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' }));
     checkEnclosedTiles();
     isSolvable();
     clearInterval(progressInterval);
