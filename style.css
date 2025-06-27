@@ -44,6 +44,9 @@ canvas {
 
 #message-box {
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: #FFFACD;
     border-radius: 10px;
     padding: 20px;
@@ -70,6 +73,9 @@ canvas {
 
 #celebration-popup {
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: #FFFACD;
     border-radius: 15px;
     padding: 20px;
@@ -95,6 +101,9 @@ canvas {
 
 #letter-box {
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="5" fill="#FFB6C1"/><rect x="8" y="12" width="4" height="6" fill="#FFDAB9"/></svg>') repeat;
     background-color: #FFF5EE;
     border-radius: 15px;
