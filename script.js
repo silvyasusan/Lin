@@ -1,155 +1,151 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Set canvas size to fit tablet screen (vertical maze, 10 cells tall)
-const cellSize = 40; // Pixels per maze cell
-const mazeHeight = 10; // 10 cells tall
-const mazeWidth = 50; // Long horizontal maze
-canvas.width = cellSize * 10; // Fit 10 cells horizontally
-canvas.height = cellSize * mazeHeight; // Fit 10 cells vertically
-const viewWidth = canvas.width / cellSize; // Visible cells (10)
+// Set canvas size for tablet (larger viewable area)
+canvas.width = 700; // 7 tiles x 100px
+canvas.height = 700; // 7 tiles x 100px
+const tileSize = 100;
 
-// Maze (1 = wall, 0 = path, 2 = rabbit start, 3 = gift box)
+// Maze (1 = wall, 0 = path, 2 = bunny start, 3 = gift box)
 const maze = [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,2,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,3,1],
-    [1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1],
-    [1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,1],
-    [1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1],
-    [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1],
-    [1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
-    [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,2,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,1],
+    [1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1],
+    [1,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1],
+    [1,0,1,1,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,0,1,1,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,1],
+    [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 ];
 
-// Game state
-let rabbit = { x: 1, y: 1 }; // Starting position
-let cameraX = 0; // Camera offset for scrolling
+// Bunny position (in tiles)
+let bunny = { x: 1, y: 1 }; // Starting position
+let camera = { x: 0, y: 0 }; // Camera offset for scrolling
 let gameWon = false;
-let bannerY = -50; // Banner starts off-screen
-let animationStart = null;
+let bannerY = -100; // Banner starts off-screen
+let bannerVisible = false;
 
-// Colors for cozy, dark theme
+// Colors for cozy aesthetic
 const colors = {
-    wall: '#4A4A55', // Dark gray
-    path: '#3A3A44', // Slightly lighter dark
-    rabbit: '#F4A7B9', // Soft pink
-    gift: '#F4C4A0', // Warm peach
-    balloon: '#C9A7EB', // Soft purple
-    banner: '#FFF3E0' // Cream
+    wall: '#4A4A4A', // Dark gray
+    path: '#FFF5EE', // Seashell white
+    bunny: '#FFB6C1', // Soft pink
+    gift: '#FFDAB9', // Peach puff
+    banner: '#FFFACD', // Lemon chiffon
+    text: '#FF9999' // Warm pink text
 };
 
-// Swipe detection
-let touchStartX = 0, touchStartY = 0;
-let touchThreshold = 30;
+// Handle tap controls
+canvas.addEventListener('click', (e) => {
+    if (gameWon && bannerVisible) return; // Ignore input after win
+    const rect = canvas.getBoundingClientRect();
+    const tapX = e.clientX - rect.left;
+    const tapY = e.clientY - rect.top;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
 
-// Draw maze
-function drawMaze() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Calculate visible maze portion
-    const startX = Math.floor(cameraX / cellSize);
-    const endX = startX + viewWidth;
-    
-    for (let y = 0; y < mazeHeight; y++) {
-        for (let x = startX; x < endX && x < mazeWidth; x++) {
-            if (x < 0 || x >= mazeWidth) continue;
-            const screenX = (x * cellSize - cameraX) % canvas.width;
-            if (maze[y][x] === 1) {
-                ctx.fillStyle = colors.wall;
-                ctx.fillRect(screenX, y * cellSize, cellSize, cellSize);
-            } else {
-                ctx.fillStyle = colors.path;
-                ctx.fillRect(screenX, y * cellSize, cellSize, cellSize);
-            }
-            if (maze[y][x] === 3) {
-                // Draw gift box
-                ctx.fillStyle = colors.gift;
-                ctx.fillRect(screenX + cellSize / 4, y * cellSize + cellSize / 4, cellSize / 2, cellSize / 2);
-            }
-        }
-    }
-    // Draw rabbit (centered)
-    ctx.fillStyle = colors.rabbit;
-    ctx.beginPath();
-    ctx.arc(canvas.width / 2, rabbit.y * cellSize + cellSize / 2, cellSize / 3, 0, Math.PI * 2);
-    ctx.fill();
-}
+    // Determine direction based on tap position
+    let dx = 0, dy = 0;
+    if (tapX > centerX + 50) dx = 1; // Right
+    else if (tapX < centerX - 50) dx = -1; // Left
+    if (tapY > centerY + 50) dy = 1; // Down
+    else if (tapY < centerY - 50) dy = -1; // Up
 
-// Draw banner and balloons
-function drawBanner() {
-    if (!gameWon) return;
-    // Balloons
-    ctx.fillStyle = colors.balloon;
-    ctx.beginPath();
-    ctx.arc(canvas.width / 4, bannerY - 20, 10, 0, Math.PI * 2);
-    ctx.arc(3 * canvas.width / 4, bannerY - 20, 10, 0, Math.PI * 2);
-    ctx.fill();
-    // Banner
-    ctx.fillStyle = colors.banner;
-    ctx.fillRect(canvas.width / 4, bannerY, canvas.width / 2, 50);
-    ctx.fillStyle = '#2B2A33';
-    ctx.font = '20px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('HAPPY BIRTHDAY BUNBUN!', canvas.width / 2, bannerY + 30);
-}
+    moveBunny(dx, dy);
+});
 
-// Move rabbit
-function moveRabbit(dx, dy) {
-    const newX = rabbit.x + dx;
-    const newY = rabbit.y + dy;
-    if (newX >= 0 && newX < mazeWidth && newY >= 0 && newY < mazeHeight && maze[newY][newX] !== 1) {
-        rabbit.x = newX;
-        rabbit.y = newY;
-        // Update camera to keep rabbit centered
-        cameraX = rabbit.x * cellSize - canvas.width / 2 + cellSize / 2;
+// Handle keyboard controls
+document.addEventListener('keydown', (e) => {
+    if (gameWon && bannerVisible) return;
+    let dx = 0, dy = 0;
+    if (e.key === 'ArrowUp') dy = -1;
+    else if (e.key === 'ArrowDown') dy = 1;
+    else if (e.key === 'ArrowLeft') dx = -1;
+    else if (e.key === 'ArrowRight') dx = 1;
+    moveBunny(dx, dy);
+});
+
+function moveBunny(dx, dy) {
+    const newX = bunny.x + dx;
+    const newY = bunny.y + dy;
+
+    // Check boundaries and walls
+    if (newX >= 0 && newX < maze[0].length && newY >= 0 && newY < maze.length && maze[newY][newX] !== 1) {
+        bunny.x = newX;
+        bunny.y = newY;
+
+        // Check for gift box
         if (maze[newY][newX] === 3) {
             gameWon = true;
-            animationStart = Date.now();
+            setTimeout(() => { bannerVisible = true; }, 500); // Delay banner
         }
     }
+
+    // Update camera to center bunny
+    camera.x = bunny.x * tileSize - canvas.width / 2 + tileSize / 2;
+    camera.y = bunny.y * tileSize - canvas.height / 2 + tileSize / 2;
 }
 
-// Animation loop
-function animate() {
-    drawMaze();
-    drawBanner();
-    if (gameWon && bannerY < canvas.height / 2) {
-        const time = (Date.now() - animationStart) / 1000;
-        bannerY = -50 + time * 50; // Slow descent
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw visible maze portion
+    const startX = Math.max(0, Math.floor(camera.x / tileSize) - 1);
+    const endX = Math.min(maze[0].length, startX + 8);
+    const startY = Math.max(0, Math.floor(camera.y / tileSize) - 1);
+    const endY = Math.min(maze.length, startY + 8);
+
+    for (let y = startY; y < endY; y++) {
+        for (let x = startX; x < endX; x++) {
+            const screenX = x * tileSize - camera.x;
+            const screenY = y * tileSize - camera.y;
+
+            if (maze[y][x] === 1) {
+                ctx.fillStyle = colors.wall;
+                ctx.fillRect(screenX, screenY, tileSize, tileSize);
+            } else if (maze[y][x] === 0 || maze[y][x] === 2) {
+                ctx.fillStyle = colors.path;
+                ctx.fillRect(screenX, screenY, tileSize, tileSize);
+            } else if (maze[y][x] === 3) {
+                ctx.fillStyle = colors.gift;
+                ctx.fillRect(screenX, screenY, tileSize, tileSize);
+                // Draw gift box (simple placeholder)
+                ctx.fillStyle = '#FF9999';
+                ctx.fillRect(screenX + tileSize / 4, screenY + tileSize / 4, tileSize / 2, tileSize / 2);
+            }
+        }
     }
-    requestAnimationFrame(animate);
+
+    // Draw bunny (centered, simple circle placeholder)
+    ctx.fillStyle = colors.bunny;
+    ctx.beginPath();
+    ctx.arc(canvas.width / 2, canvas.height / 2, tileSize / 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Draw banner if game is won
+    if (gameWon && bannerVisible) {
+        bannerY += 2; // Descend slowly
+        if (bannerY > canvas.height / 3) bannerY = canvas.height / 3; // Stop at center
+
+        // Draw balloons (simple circles)
+        ctx.fillStyle = colors.bunny;
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2 - 100, bannerY - 50, 20, 0, Math.PI * 2);
+        ctx.arc(canvas.width / 2 + 100, bannerY - 50, 20, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw banner
+        ctx.fillStyle = colors.banner;
+        ctx.fillRect(canvas.width / 2 - 150, bannerY, 300, 80);
+        ctx.fillStyle = colors.text;
+        ctx.font = '30px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('HAPPY BIRTHDAY BUNBUN!', canvas.width / 2, bannerY + 50);
+    }
+
+    requestAnimationFrame(draw);
 }
 
-// Keyboard controls
-document.addEventListener('keydown', (e) => {
-    if (gameWon) return;
-    if (e.key === 'ArrowUp') moveRabbit(0, -1);
-    if (e.key === 'ArrowDown') moveRabbit(0, 1);
-    if (e.key === 'ArrowLeft') moveRabbit(-1, 0);
-    if (e.key === 'ArrowRight') moveRabbit(1, 0);
-});
-
-// Swipe controls
-canvas.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-});
-
-canvas.addEventListener('touchend', (e) => {
-    if (gameWon) return;
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-    const dx = touchEndX - touchStartX;
-    const dy = touchEndY - touchStartY;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > touchThreshold) {
-        if (dx > 0) moveRabbit(1, 0); // Swipe right
-        else moveRabbit(-1, 0); // Swipe left
-    } else if (Math.abs(dy) > touchThreshold) {
-        if (dy > 0) moveRabbit(0, 1); // Swipe down
-        else moveRabbit(0, -1); // Swipe up
-    }
-});
-
-// Start game
-animate();
+draw();
